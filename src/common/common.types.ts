@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 export interface MetaProperties {
   createdDate: Date;
   updatedDate?: Date;
@@ -6,6 +8,7 @@ export interface MetaProperties {
 }
 
 export abstract class CommonDto {
+  @ApiProperty({ description: 'Version key', example: 0 })
   readonly __v: number;
 }
 
@@ -14,4 +17,9 @@ export interface Response<T> {
   success: boolean;
   message: string;
   data?: T;
+}
+
+export interface IReadOpts {
+  take?: number;
+  skip?: number;
 }

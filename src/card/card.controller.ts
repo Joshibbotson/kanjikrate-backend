@@ -1,13 +1,30 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { Card } from './card.schema';
+import { Card, createCardResponse, readCardByIdResponse } from './card.schema';
 import { CardService } from './card.service';
 import { CreateCardDto } from './card.types';
 import { Response } from 'src/common/common.types';
+import {
+  ApiExtraModels,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
+ApiTags('Card');
+@ApiExtraModels(Card)
 @Controller('card')
 export class CardController {
   constructor(private readonly _cardService: CardService) {}
   @Post('create')
+  @ApiOperation({ summary: 'Create a new card' })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully created Card',
+    type: Card,
+  })
+  @ApiResponse({ status: 500, description: 'Failed to create card' })
+  @ApiResponse(createCardResponse.success)
+  @ApiResponse(createCardResponse.error)
   async create(@Body() createCardDto: CreateCardDto): Promise<Response<Card>> {
     try {
       const data = await this._cardService.create(createCardDto);
@@ -28,6 +45,9 @@ export class CardController {
   }
 
   @Get('readById/:id')
+  @ApiOperation({ summary: 'Read a card by ID' })
+  @ApiResponse(readCardByIdResponse.success)
+  @ApiResponse(readCardByIdResponse.error)
   async readById(@Param('id') id: string): Promise<Response<Card>> {
     try {
       const data = await this._cardService.findById(id);
