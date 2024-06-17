@@ -4,8 +4,9 @@ import { CommonDto, MetaProperties } from 'src/common/common.types';
 export interface IUser extends MetaProperties {
   _id: string;
   active: boolean;
-  authUserId: string;
-  email?: string;
+  googleUserId: string;
+  email: string;
+  password?: string;
   locale?: string;
   name?: string;
   permissions: string[];
@@ -19,10 +20,10 @@ export class CreateUserDto extends CommonDto {
   readonly active: boolean;
 
   @ApiProperty({
-    description: 'The authentication user ID',
-    example: 'authUserId123',
+    description: 'Google authentication user ID',
+    example: 'googleUserId123',
   })
-  readonly authUserId: string;
+  readonly googleUserId: string;
 
   @ApiProperty({
     description: 'The email of the user',
@@ -31,6 +32,11 @@ export class CreateUserDto extends CommonDto {
   })
   readonly email?: string;
 
+  @ApiProperty({
+    description: 'hashed password',
+    example: 'sdfdsfdsfdsf123123',
+    required: false,
+  })
   @ApiProperty({
     description: 'The locale of the user',
     example: 'en-US',

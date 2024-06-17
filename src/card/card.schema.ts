@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { getSchemaPath } from '@nestjs/swagger';
 import { Document, Types } from 'mongoose';
 import { MetaPropertiesSchema } from 'src/common/common.schema';
+import { Deck } from 'src/deck/deck.schema';
 
 @Schema()
 export class Card extends MetaPropertiesSchema {
@@ -12,10 +13,19 @@ export class Card extends MetaPropertiesSchema {
   back: string;
 
   @Prop()
-  masteryLevel: number;
+  deck: Deck;
 
-  @Prop()
-  nextReviewDate: Date;
+  @Prop({ default: null })
+  lastReviewed?: Date;
+
+  @Prop({ default: 1 })
+  interval: number;
+
+  @Prop({ default: 0 })
+  repetitions: number;
+
+  @Prop({ default: 2.5 })
+  easeFactor: number;
 }
 
 export const CardSchema = SchemaFactory.createForClass(Card);

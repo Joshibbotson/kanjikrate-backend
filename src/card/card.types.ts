@@ -5,8 +5,10 @@ export interface ICard extends MetaProperties {
   _id: string;
   front: string;
   back: string;
-  masteryLevel: number;
-  nextReviewDate: Date;
+  lastReviewed?: Date;
+  interval: number;
+  repetitions: number;
+  easeFactor: number;
 }
 
 @ApiExtraModels()
@@ -22,13 +24,30 @@ export class CreateCardDto extends CommonDto {
     example: 'Back text example',
   })
   readonly back: string;
-
-  @ApiProperty({ description: 'The mastery level of the card', example: 1 })
-  readonly masteryLevel: number;
+  @ApiProperty({
+    description: 'The date the card was last reviewed',
+    example: '2024-06-16T19:23:00Z',
+    required: false,
+  })
+  readonly lastReviewed?: Date;
 
   @ApiProperty({
-    description: 'The next review date of the card',
-    example: '2024-07-20T00:00:00.000Z',
+    description:
+      'The interval (in days) before the card will be reviewed again',
+    example: 7,
   })
-  readonly nextReviewDate: Date;
+  readonly interval: number;
+
+  @ApiProperty({
+    description: 'The number of times the card has been reviewed',
+    example: 3,
+  })
+  readonly repetitions: number;
+
+  @ApiProperty({
+    description:
+      'The ease factor of the card, representing how easy it is to remember',
+    example: 2.5,
+  })
+  readonly easeFactor: number;
 }

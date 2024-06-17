@@ -6,13 +6,16 @@ import { MetaPropertiesSchema } from 'src/common/common.schema';
 @Schema()
 export class User extends MetaPropertiesSchema {
   @Prop({ type: String })
-  authUserId: string;
+  googleUserId: string;
 
   @Prop({ default: true })
   active: boolean;
 
   @Prop()
   email?: string;
+
+  @Prop()
+  password?: string;
 
   @Prop()
   locale?: string;

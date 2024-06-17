@@ -4,11 +4,13 @@ import { CreateUserDto } from './user.types';
 import { User, createUserResponse, readUserByIdResponse } from './user.schema';
 import { Response } from 'src/common/common.types';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/decorators/public.decorator';
 
 @ApiTags('User')
 @Controller('user')
 export class UserController {
   constructor(private readonly _userService: UserService) {}
+  @Public()
   @Post('create')
   @ApiResponse(createUserResponse.success)
   @ApiResponse(createUserResponse.error)
@@ -52,4 +54,28 @@ export class UserController {
       };
     }
   }
+
+  // @Get('validateToken')
+  // @ApiResponse()
+  // @ApiResponse()
+  // async validateJwtToken(
+  //   @Body('token') token: string,
+  // ): Promise<Response<boolean>> {
+  //   try {
+  //     const data = await this._userService.validateToken(token);
+  //     return {
+  //       code: 200,
+  //       success: true,
+  //       message: 'Successful token validation',
+  //       data,
+  //     };
+  //   } catch (err) {
+  //     return {
+  //       code: 500,
+  //       success: false,
+  //       message: `Failed to validate token with an error of: ${err.message}`,
+  //       data: null,
+  //     };
+  //   }
+  // }
 }

@@ -29,6 +29,21 @@ export abstract class CommonService<CreateType, ReadType, DocumentType> {
     return data as unknown as ReadType;
   }
 
+  public async findOne(value: string): Promise<ReadType | null> {
+    const cacheKey = `findOne_${value}`;
+    let data = await this.cacheManager.get(cacheKey);
+
+    if (!data) {
+      data = await this.model.findOne({ value: value }).exec();
+    }
+    if (data) {
+      await this.cacheManager.set(cacheKey, data);
+    } else {
+      return null;
+    }
+    return data as unknown as ReadType;
+  }
+
   public async create(createDto: CreateType): Promise<ReadType> {
     const createdData = new this.model(createDto);
     return createdData.save() as unknown as ReadType;
