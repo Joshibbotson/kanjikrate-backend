@@ -2,14 +2,15 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { DeckService } from './deck.service';
 import { CreateDeckDto } from './deck.types';
 import { Deck, createDeckResponse, readDeckByIdResponse } from './deck.schema';
-import { Response } from 'src/common/common.types';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Response } from 'src/features/common/common.types';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 ApiTags('Deck');
 @Controller('deck')
 export class DeckController {
   constructor(private readonly _deckService: DeckService) {}
   @Post('create')
+  @ApiOperation({ summary: 'Create a deck', operationId: 'createDeck' })
   @ApiResponse(createDeckResponse.success)
   @ApiResponse(createDeckResponse.error)
   async create(@Body() createDeckDto: CreateDeckDto): Promise<Response<Deck>> {
@@ -32,6 +33,7 @@ export class DeckController {
   }
 
   @Get('readById/:id')
+  @ApiOperation({ summary: 'Read deck by Id', operationId: 'readDeckById' })
   @ApiResponse(readDeckByIdResponse.success)
   @ApiResponse(readDeckByIdResponse.error)
   async readById(@Param('id') id: string): Promise<Response<Deck>> {

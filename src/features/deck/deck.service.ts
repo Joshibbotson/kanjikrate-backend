@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CommonService } from 'src/common/common.service';
+import { CommonService } from 'src/features/common/common.service';
 import { Deck, DeckDocument } from './deck.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';

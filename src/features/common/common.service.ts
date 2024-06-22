@@ -1,7 +1,7 @@
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
-import { Model, Types } from 'mongoose';
+import { FilterQuery, Model, Types } from 'mongoose';
 import { IReadOpts } from './common.types';
 
 @Injectable()
@@ -29,12 +29,13 @@ export abstract class CommonService<CreateType, ReadType, DocumentType> {
     return data as unknown as ReadType;
   }
 
-  public async findOne(value: string): Promise<ReadType | null> {
-    const cacheKey = `findOne_${value}`;
+  public async findOne(query: FilterQuery<ReadType>): Promise<ReadType | null> {
+    const cacheKey = `findOne_${query}`;
     let data = await this.cacheManager.get(cacheKey);
-
+    console.log('findone', query);
     if (!data) {
-      data = await this.model.findOne({ value: value }).exec();
+      data = await this.model.findOne(query).exec();
+      console.log('findone', data);
     }
     if (data) {
       await this.cacheManager.set(cacheKey, data);

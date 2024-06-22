@@ -1,29 +1,36 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { getSchemaPath } from '@nestjs/swagger';
+import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import { Document, Types } from 'mongoose';
-import { MetaPropertiesSchema } from 'src/common/common.schema';
+import { MetaPropertiesSchema } from 'src/features/common/common.schema';
 
 @Schema()
 export class User extends MetaPropertiesSchema {
   @Prop({ type: String })
+  @ApiProperty()
   googleUserId: string;
 
   @Prop({ default: true })
+  @ApiProperty({ default: true })
   active: boolean;
 
   @Prop()
+  @ApiProperty({ required: false })
   email?: string;
 
   @Prop()
+  @ApiProperty({ required: false })
   password?: string;
 
   @Prop()
+  @ApiProperty({ required: false })
   locale?: string;
 
   @Prop()
+  @ApiProperty({ required: false })
   name?: string;
 
   @Prop({ type: [String] })
+  @ApiProperty({ type: [String] })
   permissions: string[];
 }
 

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { CommonDto, MetaProperties } from 'src/common/common.types';
+import { CommonDto, MetaProperties } from 'src/features/common/common.types';
 
 export interface IUser extends MetaProperties {
   _id: string;
@@ -37,6 +37,7 @@ export class CreateUserDto extends CommonDto {
     example: 'sdfdsfdsfdsf123123',
     required: false,
   })
+  password?: string;
   @ApiProperty({
     description: 'The locale of the user',
     example: 'en-US',

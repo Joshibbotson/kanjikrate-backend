@@ -1,30 +1,37 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { getSchemaPath } from '@nestjs/swagger';
+import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import { Document, Types } from 'mongoose';
-import { MetaPropertiesSchema } from 'src/common/common.schema';
-import { Deck } from 'src/deck/deck.schema';
+import { MetaPropertiesSchema } from 'src/features/common/common.schema';
+import { Deck } from 'src/features/deck/deck.schema';
 
 @Schema()
 export class Card extends MetaPropertiesSchema {
   @Prop()
+  @ApiProperty()
   front: string;
 
   @Prop()
+  @ApiProperty()
   back: string;
 
-  @Prop()
+  @Prop({ type: Types.ObjectId, ref: 'Deck' })
+  @ApiProperty({ type: () => Deck })
   deck: Deck;
 
   @Prop({ default: null })
+  @ApiProperty({ type: Date, required: false, default: null })
   lastReviewed?: Date;
 
   @Prop({ default: 1 })
+  @ApiProperty({ default: 1 })
   interval: number;
 
   @Prop({ default: 0 })
+  @ApiProperty({ default: 0 })
   repetitions: number;
 
   @Prop({ default: 2.5 })
+  @ApiProperty({ default: 2.5 })
   easeFactor: number;
 }
 

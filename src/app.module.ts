@@ -1,14 +1,15 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
-import { UserModule } from './user/user.module';
+import { UserModule } from './features/user/user.module';
 import { CacheModule, CacheInterceptor } from '@nestjs/cache-manager';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { DeckModule } from './deck/deck.module';
-import { CardModule } from './card/card.module';
-import { AuthGuard } from './auth/auth.guard';
+import { DeckModule } from './features/deck/deck.module';
+import { CardModule } from './features/card/card.module';
+import { AuthGuard } from './features/auth/auth.guard';
+import { AuthModule } from './features/auth/auth.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { AuthGuard } from './auth/auth.guard';
     UserModule,
     DeckModule,
     CardModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [

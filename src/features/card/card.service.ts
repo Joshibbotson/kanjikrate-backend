@@ -1,6 +1,6 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { CommonService } from 'src/common/common.service';
+import { CommonService } from 'src/features/common/common.service';
 import { Card, CardDocument } from './card.schema';
 import { Model } from 'mongoose';
 import { CreateCardDto } from './card.types';

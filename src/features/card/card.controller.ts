@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { Card, createCardResponse, readCardByIdResponse } from './card.schema';
 import { CardService } from './card.service';
 import { CreateCardDto } from './card.types';
-import { Response } from 'src/common/common.types';
+import { Response } from 'src/features/common/common.types';
 import {
   ApiExtraModels,
   ApiOperation,
@@ -16,7 +16,7 @@ ApiTags('Card');
 export class CardController {
   constructor(private readonly _cardService: CardService) {}
   @Post('create')
-  @ApiOperation({ summary: 'Create a new card' })
+  @ApiOperation({ summary: 'Create a new card', operationId: 'createCard' })
   @ApiResponse({
     status: 200,
     description: 'Successfully created Card',
@@ -45,7 +45,7 @@ export class CardController {
   }
 
   @Get('readById/:id')
-  @ApiOperation({ summary: 'Read a card by ID' })
+  @ApiOperation({ summary: 'Read a card by ID', operationId: 'readCardById' })
   @ApiResponse(readCardByIdResponse.success)
   @ApiResponse(readCardByIdResponse.error)
   async readById(@Param('id') id: string): Promise<Response<Card>> {

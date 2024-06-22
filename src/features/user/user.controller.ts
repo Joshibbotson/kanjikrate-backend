@@ -2,8 +2,8 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './user.types';
 import { User, createUserResponse, readUserByIdResponse } from './user.schema';
-import { Response } from 'src/common/common.types';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Response } from 'src/features/common/common.types';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/decorators/public.decorator';
 
 @ApiTags('User')
@@ -12,11 +12,12 @@ export class UserController {
   constructor(private readonly _userService: UserService) {}
   @Public()
   @Post('create')
+  @ApiOperation({ summary: 'Create user', operationId: 'createUser' })
   @ApiResponse(createUserResponse.success)
   @ApiResponse(createUserResponse.error)
   async create(@Body() createUserDto: CreateUserDto): Promise<Response<User>> {
     try {
-      const data = await this._userService.create(createUserDto);
+      const data = await this._userService.registerUser(createUserDto);
       return {
         code: 200,
         success: true,
@@ -34,6 +35,7 @@ export class UserController {
   }
 
   @Get('readById/:id')
+  @ApiOperation({ summary: 'Read user by Id', operationId: 'readUserById' })
   @ApiResponse(readUserByIdResponse.success)
   @ApiResponse(readUserByIdResponse.error)
   async readById(@Param('id') id: string): Promise<Response<User>> {

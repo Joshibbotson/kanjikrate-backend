@@ -1,22 +1,26 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { getSchemaPath } from '@nestjs/swagger';
+import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import { Document, Types } from 'mongoose';
-import { Card } from 'src/card/card.schema';
-import { MetaPropertiesSchema } from 'src/common/common.schema';
-import { User } from 'src/user/user.schema';
+import { Card } from 'src/features/card/card.schema';
+import { MetaPropertiesSchema } from 'src/features/common/common.schema';
+import { User } from '../user/user.schema';
 
 @Schema()
 export class Deck extends MetaPropertiesSchema {
   @Prop()
+  @ApiProperty()
   name: string;
 
   @Prop()
+  @ApiProperty({ required: false })
   description?: string;
 
   @Prop()
+  @ApiProperty({ type: () => User, required: false })
   owner?: User;
 
   @Prop()
+  @ApiProperty({ type: [Card] })
   cards: Card[];
 }
 
