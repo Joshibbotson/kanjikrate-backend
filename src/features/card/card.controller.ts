@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { Card, createCardResponse, readCardByIdResponse } from './card.schema';
 import { CardService } from './card.service';
 import { CreateCardDto } from './card.types';
-import { Response } from 'src/features/common/common.types';
+import { IResponse } from 'src/features/common/common.types';
 import {
   ApiExtraModels,
   ApiOperation,
@@ -25,7 +25,7 @@ export class CardController {
   @ApiResponse({ status: 500, description: 'Failed to create card' })
   @ApiResponse(createCardResponse.success)
   @ApiResponse(createCardResponse.error)
-  async create(@Body() createCardDto: CreateCardDto): Promise<Response<Card>> {
+  async create(@Body() createCardDto: CreateCardDto): Promise<IResponse<Card>> {
     try {
       const data = await this._cardService.create(createCardDto);
       return {
@@ -48,7 +48,7 @@ export class CardController {
   @ApiOperation({ summary: 'Read a card by ID', operationId: 'readCardById' })
   @ApiResponse(readCardByIdResponse.success)
   @ApiResponse(readCardByIdResponse.error)
-  async readById(@Param('id') id: string): Promise<Response<Card>> {
+  async readById(@Param('id') id: string): Promise<IResponse<Card>> {
     try {
       const data = await this._cardService.findById(id);
       return {

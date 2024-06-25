@@ -1,7 +1,7 @@
 import { ApiExtraModels, ApiProperty } from '@nestjs/swagger';
-import { CommonDto, MetaProperties } from 'src/features/common/common.types';
+import { CommonDto, IMetaProperties } from 'src/features/common/common.types';
 
-export interface ICard extends MetaProperties {
+export interface ICard extends IMetaProperties {
   _id: string;
   front: string;
   back: string;

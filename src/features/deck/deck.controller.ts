@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { DeckService } from './deck.service';
 import { CreateDeckDto } from './deck.types';
 import { Deck, createDeckResponse, readDeckByIdResponse } from './deck.schema';
-import { Response } from 'src/features/common/common.types';
+import { IResponse } from 'src/features/common/common.types';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 ApiTags('Deck');
@@ -13,7 +13,7 @@ export class DeckController {
   @ApiOperation({ summary: 'Create a deck', operationId: 'createDeck' })
   @ApiResponse(createDeckResponse.success)
   @ApiResponse(createDeckResponse.error)
-  async create(@Body() createDeckDto: CreateDeckDto): Promise<Response<Deck>> {
+  async create(@Body() createDeckDto: CreateDeckDto): Promise<IResponse<Deck>> {
     try {
       const data = await this._deckService.create(createDeckDto);
       return {
@@ -36,7 +36,7 @@ export class DeckController {
   @ApiOperation({ summary: 'Read deck by Id', operationId: 'readDeckById' })
   @ApiResponse(readDeckByIdResponse.success)
   @ApiResponse(readDeckByIdResponse.error)
-  async readById(@Param('id') id: string): Promise<Response<Deck>> {
+  async readById(@Param('id') id: string): Promise<IResponse<Deck>> {
     try {
       const data = await this._deckService.findById(id);
       return {

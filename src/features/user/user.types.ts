@@ -1,7 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { CommonDto, MetaProperties } from 'src/features/common/common.types';
+import {
+  CommonDto,
+  IMetaProperties,
+  IResponse,
+} from 'src/features/common/common.types';
 
-export interface IUser extends MetaProperties {
+export interface IUser extends IMetaProperties {
   _id: string;
   active: boolean;
   googleUserId: string;
@@ -10,6 +14,10 @@ export interface IUser extends MetaProperties {
   locale?: string;
   name?: string;
   permissions: string[];
+}
+
+export interface ICreateUserResponse extends IResponse<IUser> {
+  token: string;
 }
 
 export class CreateUserDto extends CommonDto {
@@ -38,6 +46,7 @@ export class CreateUserDto extends CommonDto {
     required: false,
   })
   password?: string;
+
   @ApiProperty({
     description: 'The locale of the user',
     example: 'en-US',

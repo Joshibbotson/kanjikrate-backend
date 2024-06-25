@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export interface MetaProperties {
+export interface IMetaProperties {
   createdDate: Date;
   updatedDate?: Date;
   deletedDate?: Date;
@@ -12,7 +12,7 @@ export abstract class CommonDto {
   readonly __v: number;
 }
 
-export interface Response<T> {
+export interface IResponse<T> {
   code: number;
   success: boolean;
   message: string;

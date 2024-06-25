@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ICard } from 'src/features/card/card.types';
-import { CommonDto, MetaProperties } from 'src/features/common/common.types';
+import { CommonDto, IMetaProperties } from 'src/features/common/common.types';
 import { IUser } from 'src/features/user/user.types';
 
-export interface IDeck extends MetaProperties {
+export interface IDeck extends IMetaProperties {
   _id: string;
   name: string;
   description: string;
