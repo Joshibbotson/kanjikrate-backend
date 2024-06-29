@@ -2,7 +2,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import { Document, Types } from 'mongoose';
 import { MetaPropertiesSchema } from 'src/features/common/common.schema';
-import { Deck } from 'src/features/deck/deck.schema';
 
 @Schema()
 export class Card extends MetaPropertiesSchema {
@@ -14,9 +13,9 @@ export class Card extends MetaPropertiesSchema {
   @ApiProperty()
   back: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'Deck' })
-  @ApiProperty({ type: () => Deck })
-  deck: Deck;
+  @Prop({ type: Types.ObjectId, ref: 'decks' })
+  @ApiProperty({ type: [String], description: 'Array of Deck ObjectIds' })
+  deck: Types.ObjectId;
 
   @Prop({ default: null })
   @ApiProperty({ type: Date, required: false, default: null })

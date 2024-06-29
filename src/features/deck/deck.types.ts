@@ -1,14 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ICard } from 'src/features/card/card.types';
+import { Types } from 'mongoose';
+
 import { CommonDto, IMetaProperties } from 'src/features/common/common.types';
 import { IUser } from 'src/features/user/user.types';
+import { IReadCard } from '../card/card.types';
 
-export interface IDeck extends IMetaProperties {
+export interface IReadDeck extends IMetaProperties {
   _id: string;
   name: string;
   description: string;
   owner: IUser;
-  cards: ICard[];
+  cards: IReadCard[];
+}
+export interface IDefaultDecks {
+  hiraganaDeck: Types.ObjectId;
+  katakanaDeck: Types.ObjectId;
+  romajiDeck: Types.ObjectId;
 }
 
 export class CreateDeckDto extends CommonDto {
@@ -24,9 +31,13 @@ export class CreateDeckDto extends CommonDto {
   })
   readonly description: string;
 
-  @ApiProperty({ description: 'The owner of the deck', type: Object })
-  readonly owner: IUser;
+  @ApiProperty({ description: 'The owner of the deck', type: Types.ObjectId })
+  readonly owner: Types.ObjectId;
 
-  @ApiProperty({ description: 'The cards in the deck', type: [Object] })
-  readonly cards: ICard[];
+  @ApiProperty({
+    type: [String],
+    description: 'Array of Card ObjectIds',
+    required: false,
+  })
+  cards?: Types.ObjectId[];
 }

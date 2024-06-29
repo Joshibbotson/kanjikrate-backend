@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Types } from 'mongoose';
 
 export interface IMetaProperties {
   createdDate: Date;
@@ -22,4 +23,13 @@ export interface IResponse<T> {
 export interface IReadOpts {
   take?: number;
   skip?: number;
+  populate?: string;
+}
+
+export interface IReadByField extends IReadOpts {
+  field: string;
+  boolValue?: boolean;
+  stringValue?: string;
+  intValue?: number;
+  objectId?: Types.ObjectId;
 }

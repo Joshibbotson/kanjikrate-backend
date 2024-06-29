@@ -2,15 +2,17 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CommonService } from 'src/features/common/common.service';
 import { Card, CardDocument } from './card.schema';
-import { Model } from 'mongoose';
-import { CreateCardDto } from './card.types';
+import { Model, Types } from 'mongoose';
+import { CreateCardDto, IReadCard } from './card.types';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { defaultCardOpts } from './card.data';
+import { IDefaultDecks } from '../deck/deck.types';
 
 @Injectable()
 export class CardService extends CommonService<
   CreateCardDto,
-  Card,
+  IReadCard,
   CardDocument
 > {
   constructor(
@@ -18,6 +20,49 @@ export class CardService extends CommonService<
     @Inject(CACHE_MANAGER) cacheManager: Cache,
   ) {
     super(cardModel, cacheManager);
+  }
+
+  public async createDefaultCards(defaultDeckIds: IDefaultDecks) {
+    const mappedHiraganaCards = defaultCardOpts.hiraganaCards.map((card) => {
+      return { ...card, deck: defaultDeckIds.hiraganaDeck };
+    });
+
+    const mappedKatakanaCards = defaultCardOpts.katakanaCards.map((card) => {
+      return { ...card, deck: defaultDeckIds.katakanaDeck };
+    });
+
+    const mappedRomajiCards = defaultCardOpts.romajiCards.map((card) => {
+      return { ...card, deck: defaultDeckIds.romajiDeck };
+    });
+
+    // const allCards = [
+    //   ...mappedHiraganaCards,
+    //   ...mappedKatakanaCards,
+    //   ...mappedRomajiCards,
+    // ];
+
+    const createdHiraganaCards = await this.createMany(mappedHiraganaCards);
+    const createdKatakanaCards = await this.createMany(mappedKatakanaCards);
+    const createdRomajiCards = await this.createMany(mappedRomajiCards);
+
+    const createdCards = {
+      hiraganaCards: createdHiraganaCards.map(
+        (card) => new Types.ObjectId(card._id),
+      ),
+      katakanaCards: createdKatakanaCards.map(
+        (card) => new Types.ObjectId(card._id),
+      ),
+      romajiCards: createdRomajiCards.map(
+        (card) => new Types.ObjectId(card._id),
+      ),
+    };
+    // const createdCards = await this.createMany(allCards);
+
+    // const cardIds = createdCards.map((card) => new Types.ObjectId(card._id));
+
+    console.log('behold creator of cards completed');
+
+    return createdCards;
   }
 
   async reviewCard(cardId: string, grade: number): Promise<Card> {

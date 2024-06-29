@@ -45,13 +45,42 @@ export abstract class CommonService<CreateType, ReadType, DocumentType> {
     return data as unknown as ReadType;
   }
 
+  public async findByField(
+    query: FilterQuery<ReadType>,
+    opts: IReadOpts,
+  ): Promise<ReadType[] | null> {
+    const cacheKey = `findByField_${query}`;
+    let data = await this.cacheManager.get(cacheKey);
+    console.log('findByField', query);
+    if (!data) {
+      data = await this.model
+        .find(query)
+        .populate(opts.populate)
+        .skip(opts.skip || 0)
+        .limit(opts.take || 20)
+        .exec();
+      console.log('findByField', data);
+    }
+    if (data) {
+      await this.cacheManager.set(cacheKey, data);
+    } else {
+      return null;
+    }
+    return data as unknown as ReadType[];
+  }
+
   public async create(createDto: CreateType): Promise<ReadType> {
     const createdData = new this.model(createDto);
     return createdData.save() as unknown as ReadType;
   }
 
+  public async createMany(createDtos: CreateType[]): Promise<ReadType[]> {
+    const createdData = this.model.insertMany(createDtos);
+    return createdData as unknown as ReadType[];
+  }
+
   public async update(
-    id: string,
+    id: Types.ObjectId,
     updateDto: Partial<CreateType>,
   ): Promise<ReadType | null> {
     const existingEntity = await this.model
@@ -64,7 +93,7 @@ export abstract class CommonService<CreateType, ReadType, DocumentType> {
 
     existingEntity.set(updateDto as DocumentType);
     const updatedEntity = await existingEntity.save();
-    await this.invalidateCacheById(id);
+    await this.invalidateCacheById(id.toString());
     return updatedEntity as unknown as ReadType;
   }
 
