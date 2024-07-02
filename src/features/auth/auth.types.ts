@@ -1,10 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IUser } from '../user/user.types';
 
 export interface ILoginResponse {
   code: number;
   success: boolean;
   message: string;
   token: string;
+  user: Partial<IUser>;
 }
 
 export class ILoginOpts {

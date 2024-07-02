@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UserService } from '../user/user.service';
+import { IUser } from '../user/user.types';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +21,7 @@ export class AuthService {
   public async signIn(
     email: string,
     password: string,
-  ): Promise<{ access_token: string }> {
+  ): Promise<{ access_token: string; user: Partial<IUser> }> {
     const query = { email: email };
     const user = await this.userService.findOne(query);
     if (user === null) {
@@ -32,7 +33,9 @@ export class AuthService {
     if (!isMatch) {
       throw new UnauthorizedException();
     }
-    return this.signToken(user.email);
+    delete user.password;
+    const token = await this.signToken(user.email);
+    return { ...token, user };
   }
 
   public async signToken(email: string) {

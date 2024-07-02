@@ -23,12 +23,14 @@ export class UserService extends CommonService<
     super(userModel, cacheManager);
   }
 
-  public async registerUser(user: CreateUserDto) {
+  public async registerUser(user: CreateUserDto): Promise<Partial<IUser>> {
     const saltOrRounds = await bcrypt.genSalt();
     const hash = await bcrypt.hash(user.password, saltOrRounds);
     user.password = hash;
     const newUser = await this.create(user);
     await this._deckService.createDefaultDecks(new Types.ObjectId(newUser._id));
+    delete newUser.password;
+
     return newUser;
   }
 }

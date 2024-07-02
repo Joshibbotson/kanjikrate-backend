@@ -3,6 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import { FilterQuery, Model, Types } from 'mongoose';
 import { IReadOpts } from './common.types';
+import { IUser } from '../user/user.types';
 
 @Injectable()
 export abstract class CommonService<CreateType, ReadType, DocumentType> {
@@ -29,20 +30,22 @@ export abstract class CommonService<CreateType, ReadType, DocumentType> {
     return data as unknown as ReadType;
   }
 
-  public async findOne(query: FilterQuery<ReadType>): Promise<ReadType | null> {
-    const cacheKey = `findOne_${query}`;
-    let data = await this.cacheManager.get(cacheKey);
-    console.log('findone', query);
+  public async findOne(query: FilterQuery<IUser>): Promise<IUser | null> {
+    const cacheKey = `findOne_${JSON.stringify(query)}`;
+    const data = await this.cacheManager.get<IUser>(cacheKey);
+    console.log('cacheCheck', data);
+
     if (!data) {
-      data = await this.model.findOne(query).exec();
-      console.log('findone', data);
+      const dbData = await this.model.findOne(query).exec();
+      console.log('findone', dbData);
+      if (dbData) {
+        await this.cacheManager.set(cacheKey, dbData);
+        console.log('post set');
+      }
+      return dbData.toObject();
     }
-    if (data) {
-      await this.cacheManager.set(cacheKey, data);
-    } else {
-      return null;
-    }
-    return data as unknown as ReadType;
+
+    return data;
   }
 
   public async findByField(
@@ -71,7 +74,8 @@ export abstract class CommonService<CreateType, ReadType, DocumentType> {
 
   public async create(createDto: CreateType): Promise<ReadType> {
     const createdData = new this.model(createDto);
-    return createdData.save() as unknown as ReadType;
+    const savedData = await createdData.save();
+    return savedData.toObject() as ReadType;
   }
 
   public async createMany(createDtos: CreateType[]): Promise<ReadType[]> {

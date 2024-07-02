@@ -33,6 +33,7 @@ export class AuthController {
         success: true,
         message: 'Successfully logged in',
         token: data.access_token,
+        user: data.user,
       };
     } catch (err) {
       throw new HttpException(
@@ -51,7 +52,6 @@ export class AuthController {
   @ApiResponse(validateTokenResponse.success)
   @ApiResponse(validateTokenResponse.error)
   public async validateToken(@Body() opts: { token: string }) {
-    console.log(opts);
     try {
       const data = await this._authService.validateToken(opts.token);
       return {

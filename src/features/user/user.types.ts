@@ -16,7 +16,7 @@ export interface IUser extends IMetaProperties {
   permissions: string[];
 }
 
-export interface ICreateUserResponse extends IResponse<IUser> {
+export interface ICreateUserResponse extends IResponse<Partial<IUser>> {
   token: string;
 }
 
