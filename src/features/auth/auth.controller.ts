@@ -50,9 +50,10 @@ export class AuthController {
   @ApiOperation({ summary: 'Validate Token', operationId: 'validateToken' })
   @ApiResponse(validateTokenResponse.success)
   @ApiResponse(validateTokenResponse.error)
-  public async validateToken(@Body() token: string) {
+  public async validateToken(@Body() opts: { token: string }) {
+    console.log(opts);
     try {
-      const data = await this._authService.validateToken(token);
+      const data = await this._authService.validateToken(opts.token);
       return {
         code: 200,
         success: true,

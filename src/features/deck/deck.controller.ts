@@ -2,16 +2,22 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { DeckService } from './deck.service';
 import { CreateDeckDto, IReadDeck } from './deck.types';
 import {
+  Deck,
   createDeckResponse,
   readDeckByFieldResponse,
   readDeckByIdResponse,
 } from './deck.schema';
-import { IReadByField, IResponse } from 'src/features/common/common.types';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Public } from 'src/decorators/public.decorator';
+import { IResponse, ReadByFieldDto } from 'src/features/common/common.types';
+import {
+  ApiExtraModels,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Types } from 'mongoose';
 
-ApiTags('Deck');
+@ApiTags('Deck')
+@ApiExtraModels(Deck)
 @Controller('deck')
 export class DeckController {
   constructor(private readonly _deckService: DeckService) {}
@@ -41,8 +47,8 @@ export class DeckController {
   }
 
   // add in readMany, readByField
-  @Public()
-  @Get('readByField')
+
+  @Post('readByField')
   @ApiOperation({
     summary: 'Read deck by field',
     operationId: 'readDeckByField',
@@ -50,8 +56,9 @@ export class DeckController {
   @ApiResponse(readDeckByFieldResponse.success)
   @ApiResponse(readDeckByFieldResponse.error)
   public async readbyField(
-    @Body() opts: IReadByField,
+    @Body() opts: ReadByFieldDto,
   ): Promise<IResponse<IReadDeck[]>> {
+    console.log('opts:', opts);
     try {
       const { boolValue, stringValue, intValue, field, objectId } = opts;
       let value;

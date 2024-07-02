@@ -10,7 +10,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-ApiTags('Card');
+@ApiTags('Card')
 @ApiExtraModels(Card)
 @Controller('card')
 export class CardController {

@@ -33,3 +33,53 @@ export interface IReadByField extends IReadOpts {
   intValue?: number;
   objectId?: Types.ObjectId;
 }
+
+export class ReadManyDto {
+  @ApiProperty({
+    description: 'take value',
+    required: false,
+  })
+  readonly take?: number;
+  @ApiProperty({
+    description: 'skip value',
+    required: false,
+  })
+  readonly skip?: number;
+  @ApiProperty({
+    description: 'document to populate',
+    required: false,
+  })
+  readonly populate?: string;
+}
+
+export class ReadByFieldDto extends ReadManyDto {
+  @ApiProperty({
+    description: 'Field to search by',
+    required: true,
+  })
+  readonly field: string;
+
+  @ApiProperty({
+    description: 'Optional boolean value',
+    required: false,
+  })
+  readonly boolValue?: boolean;
+
+  @ApiProperty({
+    description: 'Optional string value',
+    required: false,
+  })
+  readonly stringValue?: string;
+
+  @ApiProperty({
+    description: 'Optional int value',
+    required: false,
+  })
+  readonly intValue?: number;
+
+  @ApiProperty({
+    description: 'Optional _id value',
+    required: false,
+  })
+  readonly objectId?: string;
+}

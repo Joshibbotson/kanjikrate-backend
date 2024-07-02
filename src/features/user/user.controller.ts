@@ -3,11 +3,17 @@ import { UserService } from './user.service';
 import { CreateUserDto, ICreateUserResponse } from './user.types';
 import { User, createUserResponse, readUserByIdResponse } from './user.schema';
 import { IResponse } from 'src/features/common/common.types';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiExtraModels,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Public } from 'src/decorators/public.decorator';
 import { AuthService } from '../auth/auth.service';
 
 @ApiTags('User')
+@ApiExtraModels(User)
 @Controller('user')
 export class UserController {
   constructor(
@@ -23,13 +29,9 @@ export class UserController {
   async create(
     @Body() createUserDto: CreateUserDto,
   ): Promise<ICreateUserResponse> {
-    console.log('end point hit');
     try {
       const data = await this._userService.registerUser(createUserDto);
-      const authLogin = await this._authService.signToken(
-        data.email,
-        data.password,
-      );
+      const authLogin = await this._authService.signToken(data.email);
       return {
         code: 200,
         success: true,
@@ -70,28 +72,4 @@ export class UserController {
       };
     }
   }
-
-  // @Get('validateToken')
-  // @ApiResponse()
-  // @ApiResponse()
-  // async validateJwtToken(
-  //   @Body('token') token: string,
-  // ): Promise<IResponse<boolean>> {
-  //   try {
-  //     const data = await this._userService.validateToken(token);
-  //     return {
-  //       code: 200,
-  //       success: true,
-  //       message: 'Successful token validation',
-  //       data,
-  //     };
-  //   } catch (err) {
-  //     return {
-  //       code: 500,
-  //       success: false,
-  //       message: `Failed to validate token with an error of: ${err.message}`,
-  //       data: null,
-  //     };
-  //   }
-  // }
 }

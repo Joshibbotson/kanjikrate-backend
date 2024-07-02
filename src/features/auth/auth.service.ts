@@ -12,7 +12,7 @@ export class AuthService {
 
   public async validateToken(token: string) {
     const decoded = await this.jwtService.verifyAsync(token, {
-      secret: process.env.JWT,
+      secret: process.env.JWTKEY,
     });
     return decoded;
   }
@@ -32,13 +32,16 @@ export class AuthService {
     if (!isMatch) {
       throw new UnauthorizedException();
     }
-    return this.signToken(user.email, user.password);
+    return this.signToken(user.email);
   }
 
-  public async signToken(email: string, password: string) {
-    const payload = { email: email, password: password };
+  public async signToken(email: string) {
+    const payload = { email: email };
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      access_token: await this.jwtService.signAsync(payload, {
+        secret: process.env.JWTKEY,
+        expiresIn: '1h',
+      }),
     };
   }
 }

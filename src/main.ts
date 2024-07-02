@@ -5,11 +5,14 @@ import {
   SwaggerDocumentOptions,
 } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+// import * as bodyParser from 'body-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
     origin: '*',
   });
+  // app.use(bodyParser.json());
+  // app.use(bodyParser.urlencoded({ extended: true }));
   const serverPort = process.env.SERVER_PORT || 3000;
   const serverHost = process.env.SERVER_HOST || 'localhost';
   const serverUrl = `http://${serverHost}:${serverPort}`;
