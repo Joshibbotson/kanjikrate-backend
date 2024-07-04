@@ -6,7 +6,6 @@ import {
 } from 'src/features/common/common.types';
 
 export interface IUser extends IMetaProperties {
-  _id: string;
   active: boolean;
   googleUserId: string;
   email: string;

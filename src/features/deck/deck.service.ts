@@ -7,11 +7,13 @@ import { CreateDeckDto, IReadDeck, IDefaultDecks } from './deck.types';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { CardService } from '../card/card.service';
+import { IReadManyAndCount } from '../common/common.types';
 
 @Injectable()
 export class DeckService extends CommonService<
   CreateDeckDto,
   IReadDeck,
+  IReadManyAndCount<IReadDeck>,
   DeckDocument
 > {
   private readonly hiraganaDeck = {

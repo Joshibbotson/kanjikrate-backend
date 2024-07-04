@@ -8,11 +8,13 @@ import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { defaultCardOpts } from './card.data';
 import { IDefaultDecks } from '../deck/deck.types';
+import { IReadManyAndCount } from '../common/common.types';
 
 @Injectable()
 export class CardService extends CommonService<
   CreateCardDto,
   IReadCard,
+  IReadManyAndCount<IReadCard>,
   CardDocument
 > {
   constructor(
@@ -35,12 +37,6 @@ export class CardService extends CommonService<
       return { ...card, deck: defaultDeckIds.romajiDeck };
     });
 
-    // const allCards = [
-    //   ...mappedHiraganaCards,
-    //   ...mappedKatakanaCards,
-    //   ...mappedRomajiCards,
-    // ];
-
     const createdHiraganaCards = await this.createMany(mappedHiraganaCards);
     const createdKatakanaCards = await this.createMany(mappedKatakanaCards);
     const createdRomajiCards = await this.createMany(mappedRomajiCards);
@@ -56,11 +52,6 @@ export class CardService extends CommonService<
         (card) => new Types.ObjectId(card._id),
       ),
     };
-    // const createdCards = await this.createMany(allCards);
-
-    // const cardIds = createdCards.map((card) => new Types.ObjectId(card._id));
-
-    console.log('behold creator of cards completed');
 
     return createdCards;
   }

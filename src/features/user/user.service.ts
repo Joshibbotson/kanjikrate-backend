@@ -8,11 +8,13 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import * as bcrypt from 'bcrypt';
 import { DeckService } from '../deck/deck.service';
+import { IReadManyAndCount } from '../common/common.types';
 
 @Injectable()
 export class UserService extends CommonService<
   CreateUserDto,
   IUser,
+  IReadManyAndCount<IUser>,
   UserDocument
 > {
   constructor(

@@ -3,10 +3,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import { FilterQuery, Model, Types } from 'mongoose';
 import { IReadOpts } from './common.types';
-import { IUser } from '../user/user.types';
 
 @Injectable()
-export abstract class CommonService<CreateType, ReadType, DocumentType> {
+export abstract class CommonService<
+  CreateType,
+  ReadType,
+  ReadManyAndCountType,
+  DocumentType,
+> {
   constructor(
     protected model: Model<DocumentType>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
@@ -14,25 +18,54 @@ export abstract class CommonService<CreateType, ReadType, DocumentType> {
 
   public async findById(id: string): Promise<ReadType | null> {
     const cacheKey = `findById_${id}`;
+    console.log(`Looking for cache key: ${cacheKey}`);
+
     let data = await this.cacheManager.get(cacheKey);
-    console.log('Current cache keys:', this.cacheManager.store.keys());
+    console.log('Current cache keys:', await this.cacheManager.store.keys());
     console.log('Cached data:', data);
 
     if (!data) {
-      data = await this.model.findById(new Types.ObjectId(id)).exec();
-      if (data) {
-        await this.cacheManager.set(cacheKey, data);
-        console.log('Cached data set:', await this.cacheManager.get(cacheKey));
-        console.log('Updated cache keys:', this.cacheManager.store.keys());
+      console.log(`Data not found in cache for key: ${cacheKey}`);
+      try {
+        // Validate the ID
+        if (!Types.ObjectId.isValid(id)) {
+          console.error(`Invalid ObjectId: ${id}`);
+          return null;
+        }
+
+        // Convert the string ID to ObjectId
+        const objectId = new Types.ObjectId(id);
+        console.log(`Converted ID to ObjectId: ${objectId}`);
+
+        // Query the database
+        console.log('schema:', this.model.schema);
+        data = await this.model.findById(objectId).exec();
+        console.log('Query executed on model:', this.model);
+        console.log('Data found:', data);
+
+        if (data) {
+          await this.cacheManager.set(cacheKey, data);
+          console.log('Data cached:', await this.cacheManager.get(cacheKey));
+          console.log(
+            'Updated cache keys:',
+            await this.cacheManager.store.keys(),
+          );
+        } else {
+          console.log(`No data found for id: ${id}`);
+        }
+      } catch (error) {
+        console.error('Error occurred during database query:', error);
+        return null;
       }
     }
 
+    console.log('Final data returned:', data);
     return data as unknown as ReadType;
   }
 
-  public async findOne(query: FilterQuery<IUser>): Promise<IUser | null> {
+  public async findOne(query: FilterQuery<ReadType>): Promise<ReadType | null> {
     const cacheKey = `findOne_${JSON.stringify(query)}`;
-    const data = await this.cacheManager.get<IUser>(cacheKey);
+    const data = await this.cacheManager.get<ReadType>(cacheKey);
     console.log('cacheCheck', data);
 
     if (!data) {
@@ -48,28 +81,42 @@ export abstract class CommonService<CreateType, ReadType, DocumentType> {
     return data;
   }
 
+  // update so all read manys have totalCount
   public async findByField(
     query: FilterQuery<ReadType>,
     opts: IReadOpts,
-  ): Promise<ReadType[] | null> {
+  ): Promise<ReadManyAndCountType | null> {
     const cacheKey = `findByField_${query}`;
-    let data = await this.cacheManager.get(cacheKey);
+    const cacheKeyCount = `findByFieldCount_${query}`;
+    const cacheData = await this.cacheManager.get<ReadType>(cacheKey);
+    const cacheTotalCount = await this.cacheManager.get<number>(cacheKeyCount);
+
     console.log('findByField', query);
-    if (!data) {
-      data = await this.model
+    if (!cacheData) {
+      const dbData = await this.model
         .find(query)
         .populate(opts.populate)
         .skip(opts.skip || 0)
         .limit(opts.take || 20)
         .exec();
-      console.log('findByField', data);
+      const totalCount = await this.model.countDocuments(query).exec();
+      console.log('findByField', dbData);
+      console.log('findByField count', totalCount);
+      if (dbData) {
+        await this.cacheManager.set(cacheKey, dbData);
+        await this.cacheManager.set(cacheKeyCount, totalCount);
+        return {
+          data: dbData,
+          totalCount: totalCount,
+        } as unknown as ReadManyAndCountType;
+      } else {
+        return null;
+      }
     }
-    if (data) {
-      await this.cacheManager.set(cacheKey, data);
-    } else {
-      return null;
-    }
-    return data as unknown as ReadType[];
+    return {
+      data: cacheData,
+      totalCount: cacheTotalCount,
+    } as unknown as ReadManyAndCountType;
   }
 
   public async create(createDto: CreateType): Promise<ReadType> {

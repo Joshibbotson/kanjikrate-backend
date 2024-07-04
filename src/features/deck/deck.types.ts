@@ -6,12 +6,12 @@ import { IUser } from 'src/features/user/user.types';
 import { IReadCard } from '../card/card.types';
 
 export interface IReadDeck extends IMetaProperties {
-  _id: string;
   name: string;
   description: string;
   owner: IUser;
   cards: IReadCard[];
 }
+
 export interface IDefaultDecks {
   hiraganaDeck: Types.ObjectId;
   katakanaDeck: Types.ObjectId;

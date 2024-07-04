@@ -79,15 +79,17 @@ export class DeckController {
 
       const query = { [field]: value };
 
-      const data = await this._deckService.findByField(query, {
+      const { data, totalCount } = await this._deckService.findByField(query, {
         ...opts,
         populate: 'cards',
       });
+      console.log('controlelr', totalCount);
       return {
         code: 200,
         success: true,
         message: `Successfully read Decks by Field: ${opts.field}`,
         data,
+        totalCount,
       };
     } catch (err) {
       return {
@@ -104,6 +106,7 @@ export class DeckController {
   @ApiResponse(readDeckByIdResponse.success)
   @ApiResponse(readDeckByIdResponse.error)
   async readById(@Param('id') id: string): Promise<IResponse<IReadDeck>> {
+    console.log('readById', id);
     try {
       const data = await this._deckService.findById(id);
       return {

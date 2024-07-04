@@ -6,6 +6,7 @@ export interface IMetaProperties {
   updatedDate?: Date;
   deletedDate?: Date;
   __v: number;
+  _id: Types.ObjectId;
 }
 
 export abstract class CommonDto {
@@ -18,6 +19,12 @@ export interface IResponse<T> {
   success: boolean;
   message: string;
   data?: T;
+  totalCount?: number;
+}
+
+export interface IReadManyAndCount<T> {
+  data: T[];
+  totalCount: number;
 }
 
 export interface IReadOpts {
@@ -26,7 +33,7 @@ export interface IReadOpts {
   populate?: string;
 }
 
-export interface IReadByField extends IReadOpts {
+export interface IReadByFieldOpts extends IReadOpts {
   field: string;
   boolValue?: boolean;
   stringValue?: string;

@@ -2,7 +2,6 @@ import { ApiExtraModels, ApiProperty } from '@nestjs/swagger';
 import { CommonDto, IMetaProperties } from 'src/features/common/common.types';
 
 export interface IReadCard extends IMetaProperties {
-  _id: string;
   front: string;
   back: string;
   lastReviewed?: Date;
