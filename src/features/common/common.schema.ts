@@ -1,6 +1,5 @@
 import { Prop, Schema } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { Types } from 'mongoose';
 
 @Schema()
 export abstract class MetaPropertiesSchema {
@@ -20,7 +19,6 @@ export abstract class MetaPropertiesSchema {
   @ApiProperty()
   __v: number;
 
-  @Prop({ type: Types.ObjectId })
   @ApiProperty()
-  _id: Types.ObjectId;
+  _id: string;
 }

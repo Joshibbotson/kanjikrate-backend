@@ -56,6 +56,9 @@ export class CardService extends CommonService<
     return createdCards;
   }
 
+  /** We will calculate the grade clientside. "remember === 1",
+   *  "forgot" === 2. Start time on load, stop time on flip card
+   */
   async reviewCard(cardId: string, grade: number): Promise<Card> {
     const card = await this.cardModel.findById(cardId);
     if (!card) {

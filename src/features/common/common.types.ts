@@ -6,7 +6,7 @@ export interface IMetaProperties {
   updatedDate?: Date;
   deletedDate?: Date;
   __v: number;
-  _id: Types.ObjectId;
+  _id: string;
 }
 
 export abstract class CommonDto {
