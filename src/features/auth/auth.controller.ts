@@ -9,7 +9,7 @@ import { AuthService } from './auth.service';
 import { Public } from 'src/decorators/public.decorator';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { loginResponse, validateTokenResponse } from './auth.schema';
-import { ILoginOpts, ILoginResponse } from './auth.types';
+import { ILoginOpts, ILoginResponse, IValidateTokenOpts } from './auth.types';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -51,7 +51,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Validate Token', operationId: 'validateToken' })
   @ApiResponse(validateTokenResponse.success)
   @ApiResponse(validateTokenResponse.error)
-  public async validateToken(@Body() opts: { token: string }) {
+  public async validateToken(@Body() opts: IValidateTokenOpts) {
     try {
       const data = await this._authService.validateToken(opts.token);
       return {

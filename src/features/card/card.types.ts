@@ -11,6 +11,15 @@ export interface IReadCard extends IMetaProperties {
 }
 
 @ApiExtraModels()
+export class ReviewCardDto {
+  @ApiProperty({
+    description: 'The score of a card review',
+    example: 5
+  })
+  readonly score: number;
+}
+
+@ApiExtraModels()
 export class CreateCardDto extends CommonDto {
   @ApiProperty({
     description: 'The front text of the card',

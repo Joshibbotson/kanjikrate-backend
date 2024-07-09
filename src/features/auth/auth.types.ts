@@ -1,12 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IUser } from '../user/user.types';
+import { User } from '../user/user.schema';
 
 export interface ILoginResponse {
   code: number;
   success: boolean;
   message: string;
   token: string;
-  user: Partial<IUser>;
+  user: Partial<User>;
 }
 
 export class ILoginOpts {
@@ -21,4 +22,12 @@ export class ILoginOpts {
     example: 'agoodpassword12345!',
   })
   readonly password: string;
+}
+
+export class IValidateTokenOpts {
+  @ApiProperty({
+    description: 'token for validation',
+    example:'jinib32irbi32bfinb2i',
+  })
+  readonly token: string
 }

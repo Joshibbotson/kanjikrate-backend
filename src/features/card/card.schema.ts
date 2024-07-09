@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import { Document, Types } from 'mongoose';
 import { MetaPropertiesSchema } from 'src/features/common/common.schema';
+import { generateResponse } from 'src/util/controllerResponse.util';
 
 @Schema()
 export class Card extends MetaPropertiesSchema {
@@ -72,37 +73,30 @@ export const createCardResponse = {
   },
 };
 
-export const readCardByIdResponse = {
-  success: {
-    status: 200,
+
+export const readCardByIdResponse = generateResponse({
     description: 'Successfully read Card',
-    schema: {
-      type: 'object',
-      properties: {
-        code: { type: 'number', example: 200 },
-        success: { type: 'boolean', example: true },
-        message: { type: 'string', example: 'Successfully read Card' },
-        data: { $ref: getSchemaPath(Card) },
-      },
-    },
+    msgExample: 'Successfully read Card',
+    data: { $ref: getSchemaPath(Card) },
+    code: 200
   },
-  error: {
-    status: 500,
+  {
     description: 'Failed to read card',
-    schema: {
-      properties: {
-        code: { type: 'number', example: 500 },
-        success: { type: 'boolean', example: false },
-        message: {
-          type: 'string',
-          example: 'Failed to read card with an error of: <error message>',
-        },
-        data: {
-          type: 'object',
-          nullable: true,
-          example: null,
-        },
-      },
-    },
+    msgExample: 'Failed to read card with an error of: <error message>',
+    code: 500
+  }
+)
+
+
+export const reviewCardByIdResponse = generateResponse({
+    description: 'Successfully reviewed Card',
+    msgExample: 'Successfully reviewed Card',
+    data: { $ref: getSchemaPath(Card) },
+    code: 200
   },
-};
+  {
+    description: 'Failed to review card',
+    msgExample: 'Failed to review card with an error of: <error message>',
+    code: 500
+  }
+)

@@ -38,7 +38,6 @@ export abstract class CommonService<
         console.log(`Converted ID to ObjectId: ${objectId}`);
 
         // Query the database
-        console.log('schema:', this.model.schema);
         data = await this.model.findById(objectId).exec();
         console.log('Query executed on model:', this.model);
         console.log('Data found:', data);

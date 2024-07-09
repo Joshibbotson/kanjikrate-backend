@@ -56,10 +56,9 @@ export class CardService extends CommonService<
     return createdCards;
   }
 
-  /** We will calculate the grade clientside. "remember === 1",
-   *  "forgot" === 2. Start time on load, stop time on flip card
-   */
-  async reviewCard(cardId: string, grade: number): Promise<Card> {
+ 
+  public async reviewCard(cardId: string, grade: number): Promise<IReadCard | null> {
+    console.log('reviewCard:', cardId, grade)
     const card = await this.cardModel.findById(cardId);
     if (!card) {
       throw new NotFoundException('Card not found');
@@ -96,6 +95,6 @@ export class CardService extends CommonService<
     card.lastReviewed = new Date();
 
     await card.save();
-    return card;
+    return card.toObject();
   }
 }

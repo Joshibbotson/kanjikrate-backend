@@ -1,7 +1,7 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { Card, createCardResponse, readCardByIdResponse } from './card.schema';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Card, createCardResponse, readCardByIdResponse, reviewCardByIdResponse } from './card.schema';
 import { CardService } from './card.service';
-import { CreateCardDto, IReadCard } from './card.types';
+import { CreateCardDto, IReadCard, ReviewCardDto } from './card.types';
 import { IResponse } from 'src/features/common/common.types';
 import {
   ApiExtraModels,
@@ -9,6 +9,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Public } from 'src/decorators/public.decorator';
 
 @ApiTags('Card')
 @ApiExtraModels(Card)
@@ -17,12 +18,6 @@ export class CardController {
   constructor(private readonly _cardService: CardService) {}
   @Post('create')
   @ApiOperation({ summary: 'Create a new card', operationId: 'createCard' })
-  @ApiResponse({
-    status: 200,
-    description: 'Successfully created Card',
-    type: Card,
-  })
-  @ApiResponse({ status: 500, description: 'Failed to create card' })
   @ApiResponse(createCardResponse.success)
   @ApiResponse(createCardResponse.error)
   async create(
@@ -41,6 +36,30 @@ export class CardController {
         code: 500,
         success: false,
         message: `Failed to create card with an error of: ${err.message}`,
+        data: null,
+      };
+    }
+  }
+
+  @Put('reviewCard/:id')
+  @ApiOperation({ summary: 'Review a card by ID and score', operationId: 'reviewCardById' })
+  @ApiResponse(reviewCardByIdResponse.success)
+  @ApiResponse(reviewCardByIdResponse.error)
+  async reviewCardById(@Param('id') id: string, @Body() reviewCardDto:ReviewCardDto):Promise<IResponse<IReadCard>> {
+    console.log("reviewCard/:id hit", id)
+    try {
+      const data = await this._cardService.reviewCard(id, reviewCardDto.score);
+      return {
+        code: 200,
+        success: true,
+        message: 'Successfully read Card',
+        data,
+      };
+    } catch (err) {
+      return {
+        code: 500,
+        success: false,
+        message: `Failed to read card with an error of: ${err.message}`,
         data: null,
       };
     }
