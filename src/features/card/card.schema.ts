@@ -73,6 +73,17 @@ export const createCardResponse = {
   },
 };
 
+export const readCardByFieldResponse = generateResponse({
+  description: 'Successfully read Card by Field',
+  msgExample: 'Successfully read Card by Field',
+  data: { type: 'array', items: { $ref: getSchemaPath(Card) } },
+  totalCount: { type: 'number', example: 50 },  code: 200, 
+},  {
+  description: 'Failed to read Card by Field',
+  msgExample: 'Failed to read Card by Field with an error of: <error message>',
+  code: 500, 
+});
+
 export const readCardByIdResponse = generateResponse(
   {
     description: 'Successfully read Card',

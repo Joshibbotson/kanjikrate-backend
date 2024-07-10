@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import { Document, Types } from 'mongoose';
 import { MetaPropertiesSchema } from 'src/features/common/common.schema';
+import { generateResponse } from 'src/util/controllerResponse.util';
 
 @Schema()
 export class Deck extends MetaPropertiesSchema {
@@ -60,43 +61,55 @@ export const createDeckResponse = {
   },
 };
 
-export const readDeckByFieldResponse = {
-  success: {
-    status: 200,
-    description: 'Successfully read Deck by Field',
-    schema: {
-      type: 'object',
-      properties: {
-        code: { type: 'number', example: 200 },
-        success: { type: 'boolean', example: true },
-        message: { type: 'string', example: 'Successfully read Deck by Field' },
-        data: { type: 'array', items: { $ref: getSchemaPath(Deck) } },
-        totalCount: { type: 'number', example: 50 },
-      },
-    },
-  },
-  error: {
-    status: 500,
-    description: 'Failed to read deck by Field',
-    schema: {
-      properties: {
-        code: { type: 'number', example: 500 },
-        success: { type: 'boolean', example: false },
-        message: {
-          type: 'string',
-          example:
-            'Failed to read deck by Field with an error of: <error message>',
-        },
-        data: {
-          type: 'object',
-          nullable: true,
-          example: null,
-        },
-        totalCount: { type: 'number', example: 0 },
-      },
-    },
-  },
-};
+export const readDeckByFieldResponse = generateResponse({
+  description: 'Successfully read Deck by Field',
+  msgExample: 'Successfully read Deck by Field',
+  data: { type: 'array', items: { $ref: getSchemaPath(Deck) } },
+  totalCount: { type: 'number', example: 50 },
+  code: 200, 
+},  {
+  description: 'Failed to read deck by Field',
+  msgExample: 'Failed to read deck by Field with an error of: <error message>',
+  code: 500, 
+});
+
+// export const readDeckByFieldResponse = {
+//   success: {
+//     status: 200,
+//     description: 'Successfully read Deck by Field',
+//     schema: {
+//       type: 'object',
+//       properties: {
+//         code: { type: 'number', example: 200 },
+//         success: { type: 'boolean', example: true },
+//         message: { type: 'string', example: 'Successfully read Deck by Field' },
+//         data: { type: 'array', items: { $ref: getSchemaPath(Deck) } },
+//         totalCount: { type: 'number', example: 50 },
+//       },
+//     },
+//   },
+//   error: {
+//     status: 500,
+//     description: 'Failed to read deck by Field',
+//     schema: {
+//       properties: {
+//         code: { type: 'number', example: 500 },
+//         success: { type: 'boolean', example: false },
+//         message: {
+//           type: 'string',
+//           example:
+//             'Failed to read deck by Field with an error of: <error message>',
+//         },
+//         data: {
+//           type: 'object',
+//           nullable: true,
+//           example: null,
+//         },
+//         totalCount: { type: 'number', example: 0 },
+//       },
+//     },
+//   },
+// };
 
 export const readDeckByIdResponse = {
   success: {

@@ -4,6 +4,7 @@ import {
   HttpException,
   HttpStatus,
   Post,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from 'src/decorators/public.decorator';
@@ -62,9 +63,9 @@ export class AuthController {
       };
     } catch (err) {
       return {
-        code: 500,
+        code: err instanceof UnauthorizedException ? HttpStatus.UNAUTHORIZED : HttpStatus.INTERNAL_SERVER_ERROR,
         success: false,
-        message: `Failed to validate token with an error of: ${err.message}`,
+        message: err.message,
         data: null,
       };
     }

@@ -12,10 +12,20 @@ export class AuthService {
   ) {}
 
   public async validateToken(token: string) {
-    const decoded = await this.jwtService.verifyAsync(token, {
-      secret: process.env.JWTKEY,
-    });
-    return decoded;
+    try {
+      const decoded = await this.jwtService.verifyAsync(token, {
+        secret: process.env.JWTKEY,
+      });
+      return decoded;
+    } catch (err) {
+      if (err.name === 'TokenExpiredError') {
+        throw new UnauthorizedException('Token has expired');
+      } else if (err.name === 'JsonWebTokenError') {
+        throw new UnauthorizedException('Invalid token');
+      } else {
+        throw new UnauthorizedException('Failed to validate token');
+      }
+    }
   }
 
   public async signIn(

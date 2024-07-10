@@ -2,7 +2,9 @@ export interface ISuccessOptions {
   description: string;
   msgExample: string;
   data: object;
+  totalCount?:object
   code?: number;
+  
 }
 
 export interface IErrorOptions {
@@ -18,6 +20,7 @@ export interface IResponseSchema {
     success: { type: 'boolean'; example: boolean };
     message: { type: 'string'; example: string };
     data: object;
+    totalCount?:object
   };
 }
 
@@ -56,6 +59,7 @@ export function generateResponse(
           success: { type: 'boolean', example: true },
           message: { type: 'string', example: successOpts.msgExample },
           data: successOpts.data,
+          totalCount:successOpts.totalCount
         },
       },
     },
