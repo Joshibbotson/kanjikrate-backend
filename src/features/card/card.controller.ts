@@ -1,5 +1,10 @@
 import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
-import { Card, createCardResponse, readCardByIdResponse, reviewCardByIdResponse } from './card.schema';
+import {
+  Card,
+  createCardResponse,
+  readCardByIdResponse,
+  reviewCardByIdResponse,
+} from './card.schema';
 import { CardService } from './card.service';
 import { CreateCardDto, IReadCard, ReviewCardDto } from './card.types';
 import { IResponse } from 'src/features/common/common.types';
@@ -9,7 +14,6 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Public } from 'src/decorators/public.decorator';
 
 @ApiTags('Card')
 @ApiExtraModels(Card)
@@ -42,11 +46,17 @@ export class CardController {
   }
 
   @Put('reviewCard/:id')
-  @ApiOperation({ summary: 'Review a card by ID and score', operationId: 'reviewCardById' })
+  @ApiOperation({
+    summary: 'Review a card by ID and score',
+    operationId: 'reviewCardById',
+  })
   @ApiResponse(reviewCardByIdResponse.success)
   @ApiResponse(reviewCardByIdResponse.error)
-  async reviewCardById(@Param('id') id: string, @Body() reviewCardDto:ReviewCardDto):Promise<IResponse<IReadCard>> {
-    console.log("reviewCard/:id hit", id)
+  async reviewCardById(
+    @Param('id') id: string,
+    @Body() reviewCardDto: ReviewCardDto,
+  ): Promise<IResponse<IReadCard>> {
+    console.log('reviewCard/:id hit', id);
     try {
       const data = await this._cardService.reviewCard(id, reviewCardDto.score);
       return {

@@ -14,7 +14,7 @@ export interface IReadCard extends IMetaProperties {
 export class ReviewCardDto {
   @ApiProperty({
     description: 'The score of a card review',
-    example: 5
+    example: 5,
   })
   readonly score: number;
 }

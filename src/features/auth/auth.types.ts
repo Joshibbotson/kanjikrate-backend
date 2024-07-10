@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IUser } from '../user/user.types';
 import { User } from '../user/user.schema';
 
 export interface ILoginResponse {
@@ -27,7 +26,7 @@ export class ILoginOpts {
 export class IValidateTokenOpts {
   @ApiProperty({
     description: 'token for validation',
-    example:'jinib32irbi32bfinb2i',
+    example: 'jinib32irbi32bfinb2i',
   })
-  readonly token: string
+  readonly token: string;
 }

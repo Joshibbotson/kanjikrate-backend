@@ -56,9 +56,10 @@ export class CardService extends CommonService<
     return createdCards;
   }
 
- 
-  public async reviewCard(cardId: string, grade: number): Promise<IReadCard | null> {
-    console.log('reviewCard:', cardId, grade)
+  public async reviewCard(
+    cardId: string,
+    grade: number,
+  ): Promise<IReadCard | null> {
     const card = await this.cardModel.findById(cardId);
     if (!card) {
       throw new NotFoundException('Card not found');

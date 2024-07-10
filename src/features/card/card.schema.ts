@@ -73,30 +73,30 @@ export const createCardResponse = {
   },
 };
 
-
-export const readCardByIdResponse = generateResponse({
+export const readCardByIdResponse = generateResponse(
+  {
     description: 'Successfully read Card',
     msgExample: 'Successfully read Card',
     data: { $ref: getSchemaPath(Card) },
-    code: 200
+    code: 200,
   },
   {
     description: 'Failed to read card',
     msgExample: 'Failed to read card with an error of: <error message>',
-    code: 500
-  }
-)
+    code: 500,
+  },
+);
 
-
-export const reviewCardByIdResponse = generateResponse({
+export const reviewCardByIdResponse = generateResponse(
+  {
     description: 'Successfully reviewed Card',
     msgExample: 'Successfully reviewed Card',
     data: { $ref: getSchemaPath(Card) },
-    code: 200
+    code: 200,
   },
   {
     description: 'Failed to review card',
     msgExample: 'Failed to review card with an error of: <error message>',
-    code: 500
-  }
-)
+    code: 500,
+  },
+);
