@@ -79,7 +79,7 @@ export class CardController {
       const query = { [field]: value };
 
       const { data, totalCount } = await this._cardService.findByField(query, {
-        ...opts
+        ...opts,
       });
       return {
         code: 200,

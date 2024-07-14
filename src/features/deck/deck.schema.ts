@@ -61,17 +61,21 @@ export const createDeckResponse = {
   },
 };
 
-export const readDeckByFieldResponse = generateResponse({
-  description: 'Successfully read Deck by Field',
-  msgExample: 'Successfully read Deck by Field',
-  data: { type: 'array', items: { $ref: getSchemaPath(Deck) } },
-  totalCount: { type: 'number', example: 50 },
-  code: 200, 
-},  {
-  description: 'Failed to read deck by Field',
-  msgExample: 'Failed to read deck by Field with an error of: <error message>',
-  code: 500, 
-});
+export const readDeckByFieldResponse = generateResponse(
+  {
+    description: 'Successfully read Deck by Field',
+    msgExample: 'Successfully read Deck by Field',
+    data: { type: 'array', items: { $ref: getSchemaPath(Deck) } },
+    totalCount: { type: 'number', example: 50 },
+    code: 200,
+  },
+  {
+    description: 'Failed to read deck by Field',
+    msgExample:
+      'Failed to read deck by Field with an error of: <error message>',
+    code: 500,
+  },
+);
 
 // export const readDeckByFieldResponse = {
 //   success: {

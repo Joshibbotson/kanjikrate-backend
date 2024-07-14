@@ -63,7 +63,10 @@ export class AuthController {
       };
     } catch (err) {
       return {
-        code: err instanceof UnauthorizedException ? HttpStatus.UNAUTHORIZED : HttpStatus.INTERNAL_SERVER_ERROR,
+        code:
+          err instanceof UnauthorizedException
+            ? HttpStatus.UNAUTHORIZED
+            : HttpStatus.INTERNAL_SERVER_ERROR,
         success: false,
         message: err.message,
         data: null,

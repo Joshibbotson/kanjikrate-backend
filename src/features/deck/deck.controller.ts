@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { DeckService } from './deck.service';
 import { CreateDeckDto, IReadDeck } from './deck.types';
 import {
@@ -57,6 +57,8 @@ export class DeckController {
   @ApiResponse(readDeckByFieldResponse.error)
   public async readbyField(
     @Body() opts: ReadByFieldDto,
+    @Query('take') take: number,
+    @Query('skip') skip: number,
   ): Promise<IResponse<IReadDeck[]>> {
     console.log('opts:', opts);
     try {
@@ -80,7 +82,8 @@ export class DeckController {
       const query = { [field]: value };
 
       const { data, totalCount } = await this._deckService.findByField(query, {
-        ...opts,
+        take,
+        skip,
         populate: 'cards',
       });
       console.log('controlelr', totalCount);
