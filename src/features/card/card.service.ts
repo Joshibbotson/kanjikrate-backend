@@ -71,24 +71,22 @@ export class CardService extends CommonService<
     let newInterval = interval;
     let newEaseFactor = easeFactor;
 
-    if (grade >= 3) {
-      if (repetitions === 0) {
-        newInterval = 1;
-      } else if (repetitions === 1) {
-        newInterval = 6;
-      } else {
-        newInterval = Math.round(interval * easeFactor);
-      }
-      newRepetitions += 1;
-    } else {
+    if (grade < 3) {
       newRepetitions = 0;
-      newInterval = 1;
+      newInterval = 1; // schedule for review tomorrow
+    } else {
+      newRepetitions += 1;
+      newInterval = this.getNewInterval(
+        newRepetitions,
+        newInterval,
+        newEaseFactor,
+      );
     }
 
-    newEaseFactor += 0.1 - (5 - grade) * (0.08 + (5 - grade) * 0.02);
-    if (newEaseFactor < 1.3) {
-      newEaseFactor = 1.3;
-    }
+    newEaseFactor = Math.max(
+      1.3,
+      easeFactor + (0.1 - (5 - grade) * (0.08 + (5 - grade) * 0.02)),
+    );
 
     card.repetitions = newRepetitions;
     card.interval = newInterval;
@@ -97,5 +95,35 @@ export class CardService extends CommonService<
 
     await card.save();
     return card.toObject();
+  }
+
+  getNewInterval(
+    repetitions: number,
+    interval: number,
+    easeFactor: number,
+  ): number {
+    if (repetitions === 1) return 1; // 1 day for first repetition
+    if (repetitions === 2) return 6; // 6 days for second repetition
+    return Math.round(interval * easeFactor); // thereafter
+  }
+
+  async getCardsForReview(
+    cardModel: Model<Card>,
+    deckId: string,
+  ): Promise<Card[]> {
+    const now = new Date();
+
+    // Select cards due for review
+    const cards = await cardModel
+      .find({
+        deck: deckId,
+        lastReviewed: {
+          $lt: new Date(now.getTime() - 24 * 60 * 60 * 1000 * interval),
+        },
+      })
+      .sort({ lastReviewed: 1 })
+      .limit(20); // Example limit of 20 cards
+
+    return cards;
   }
 }
