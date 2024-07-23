@@ -108,22 +108,53 @@ export class CardService extends CommonService<
   }
 
   async getCardsForReview(
-    cardModel: Model<Card>,
-    deckId: string,
-  ): Promise<Card[]> {
+    deckId: Types.ObjectId,
+  ): Promise<IReadManyAndCount<IReadCard>> {
     const now = new Date();
 
-    // Select cards due for review
-    const cards = await cardModel
-      .find({
-        deck: deckId,
-        lastReviewed: {
-          $lt: new Date(now.getTime() - 24 * 60 * 60 * 1000 * interval),
+    const result = await this.cardModel
+      .aggregate([
+        { $match: { deck: deckId } },
+        {
+          $project: {
+            front: 1,
+            back: 1,
+            deck: 1,
+            lastReviewed: 1,
+            interval: 1,
+            dueDate: {
+              $add: [
+                '$lastReviewed',
+                { $multiply: ['$interval', 24 * 60 * 60 * 1000] },
+              ],
+            },
+          },
         },
-      })
-      .sort({ lastReviewed: 1 })
-      .limit(20); // Example limit of 20 cards
+        { $match: { dueDate: { $lte: now } } },
+        {
+          $facet: {
+            totalCount: [{ $count: 'count' }],
+            cards: [
+              {
+                $project: {
+                  front: 1,
+                  back: 1,
+                  deck: 1,
+                  lastReviewed: 1,
+                  interval: 1,
+                },
+              },
+            ],
+          },
+        },
+      ])
+      .exec();
 
-    return cards;
+    const totalCount = result[0].totalCount[0]
+      ? result[0].totalCount[0].count
+      : 0;
+    const data = result[0].cards as IReadCard[];
+
+    return { totalCount, data };
   }
 }

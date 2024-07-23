@@ -22,6 +22,8 @@ export class Card extends MetaPropertiesSchema {
   @ApiProperty({ type: Date, required: false, default: null })
   lastReviewed?: Date;
 
+  // interval represents days until next review, so 31 would mean 31 days until next review
+  // from lastReviewed date.
   @Prop({ default: 1 })
   @ApiProperty({ default: 1 })
   interval: number;
@@ -113,6 +115,22 @@ export const reviewCardByIdResponse = generateResponse(
   {
     description: 'Failed to review card',
     msgExample: 'Failed to review card with an error of: <error message>',
+    code: 500,
+  },
+);
+
+export const cardsForReviewByDeckIdResponse = generateResponse(
+  {
+    description: 'Successfully reviewed Card',
+    msgExample: 'Successfully reviewed Card',
+    data: { type: 'array', items: { $ref: getSchemaPath(Card) } },
+    totalCount: { type: 'number', example: 50 },
+    code: 200,
+  },
+  {
+    description: 'Failed to get cards for review',
+    msgExample:
+      'Failed to get cards for review  with an error of: <error message>',
     code: 500,
   },
 );

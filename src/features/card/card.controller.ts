@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import {
   Card,
+  cardsForReviewByDeckIdResponse,
   createCardResponse,
   readCardByFieldResponse,
   readCardByIdResponse,
@@ -140,6 +141,39 @@ export class CardController {
         success: true,
         message: 'Successfully read Card',
         data,
+      };
+    } catch (err) {
+      return {
+        code: 500,
+        success: false,
+        message: `Failed to read card with an error of: ${err.message}`,
+        data: null,
+      };
+    }
+  }
+
+  @Get('readCardsForReview/:deckId')
+  @ApiOperation({
+    summary: 'Read a cards for review by deck Id',
+    operationId: 'readCardsForReview',
+  })
+  @ApiResponse(cardsForReviewByDeckIdResponse.success)
+  @ApiResponse(cardsForReviewByDeckIdResponse.error)
+  async readCardsForReview(
+    @Param('deckId') deckId: string,
+  ): Promise<IResponse<IReadCard[]>> {
+    try {
+      console.log('hit');
+      const { data, totalCount } = await this._cardService.getCardsForReview(
+        new Types.ObjectId(deckId),
+      );
+      console.log('data:', data);
+      return {
+        code: 200,
+        success: true,
+        message: 'Successfully read Card',
+        data,
+        totalCount,
       };
     } catch (err) {
       return {
