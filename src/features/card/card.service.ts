@@ -27,15 +27,15 @@ export class CardService extends CommonService<
   public async createDefaultCards(defaultDeckIds: IDefaultDecks) {
     const mappedHiraganaCards = defaultCardOpts.hiraganaCards.map((card) => {
       return { ...card, deck: defaultDeckIds.hiraganaDeck };
-    });
+    }) as unknown as CreateCardDto[];
 
     const mappedKatakanaCards = defaultCardOpts.katakanaCards.map((card) => {
       return { ...card, deck: defaultDeckIds.katakanaDeck };
-    });
+    }) as unknown as CreateCardDto[];
 
     const mappedRomajiCards = defaultCardOpts.romajiCards.map((card) => {
       return { ...card, deck: defaultDeckIds.romajiDeck };
-    });
+    }) as unknown as CreateCardDto[];
 
     const createdHiraganaCards = await this.createMany(mappedHiraganaCards);
     const createdKatakanaCards = await this.createMany(mappedKatakanaCards);
@@ -107,6 +107,9 @@ export class CardService extends CommonService<
     return Math.round(interval * easeFactor); // thereafter
   }
 
+  // works but it's too infrequent, not sensitive enough
+  // we need results to come back based on ease of the card too, so if this fails
+  // we should return cards that are low rated on the ease scale perhaps under 2?
   async getCardsForReview(
     deckId: Types.ObjectId,
   ): Promise<IReadManyAndCount<IReadCard>> {
@@ -125,7 +128,7 @@ export class CardService extends CommonService<
             dueDate: {
               $add: [
                 '$lastReviewed',
-                { $multiply: ['$interval', 24 * 60 * 60 * 1000] },
+                { $multiply: ['$interval', 24 * 60 * 60 * 1000] }, //convert days to milliseconds
               ],
             },
           },

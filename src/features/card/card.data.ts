@@ -1,9 +1,9 @@
 import { CreateCardDto } from './card.types';
 
 interface IDefaultDeck {
-  hiraganaCards: CreateCardDto[];
-  katakanaCards: CreateCardDto[];
-  romajiCards: CreateCardDto[];
+  hiraganaCards: Partial<CreateCardDto>[];
+  katakanaCards: Partial<CreateCardDto>[];
+  romajiCards: Partial<CreateCardDto>[];
 }
 
 export const defaultCardOpts: IDefaultDeck = {

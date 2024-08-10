@@ -1,15 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Types } from 'mongoose';
-
 import { CommonDto, IMetaProperties } from 'src/features/common/common.types';
-import { IUser } from 'src/features/user/user.types';
-import { IReadCard } from '../card/card.types';
 
 export interface IReadDeck extends IMetaProperties {
   name: string;
   description: string;
-  owner: IUser;
-  cards: IReadCard[];
+  owner: Types.ObjectId;
+  cards: Types.ObjectId[];
 }
 
 export interface IDefaultDecks {

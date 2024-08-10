@@ -11,6 +11,7 @@ import {
 } from '@nestjs/swagger';
 import { Public } from 'src/decorators/public.decorator';
 import { AuthService } from '../auth/auth.service';
+import { EmailTransporterAdapterService } from 'src/util/email-transporter-adapter/email-transporter-adapter.service';
 
 @ApiTags('User')
 @ApiExtraModels(User)
@@ -19,6 +20,7 @@ export class UserController {
   constructor(
     private readonly _userService: UserService,
     private readonly _authService: AuthService,
+    private readonly _emailTransportAdapterService: EmailTransporterAdapterService,
   ) {}
 
   @Public()
@@ -32,6 +34,12 @@ export class UserController {
     try {
       const data = await this._userService.registerUser(createUserDto);
       const authLogin = await this._authService.signToken(data.email);
+      const email = await this._emailTransportAdapterService.sendEmail(
+        'joshua_ibbotson@hotmail.com',
+        'hello world',
+        '<h1>Hello World!</h1>',
+      );
+      console.log(email);
       return {
         code: 200,
         success: true,

@@ -1,4 +1,5 @@
 import { ApiExtraModels, ApiProperty } from '@nestjs/swagger';
+import { Types } from 'mongoose';
 import { CommonDto, IMetaProperties } from 'src/features/common/common.types';
 
 export interface IReadCard extends IMetaProperties {
@@ -8,6 +9,7 @@ export interface IReadCard extends IMetaProperties {
   interval: number;
   repetitions: number;
   easeFactor: number;
+  deck: string;
 }
 
 @ApiExtraModels()
@@ -32,6 +34,13 @@ export class CreateCardDto extends CommonDto {
     example: 'Back text example',
   })
   readonly back: string;
+
+  @ApiProperty({
+    description: 'The deckId the card belongs to',
+    example: 'j98h8hy87fh387',
+  })
+  readonly deck: Types.ObjectId;
+
   @ApiProperty({
     description: 'The date the card was last reviewed',
     example: '2024-06-16T19:23:00Z',

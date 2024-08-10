@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { DeckService } from './deck.service';
 import { CreateDeckDto, IReadDeck } from './deck.types';
 import {
@@ -15,12 +23,16 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Types } from 'mongoose';
+import { CardService } from '../card/card.service';
 
 @ApiTags('Deck')
 @ApiExtraModels(Deck)
 @Controller('deck')
 export class DeckController {
-  constructor(private readonly _deckService: DeckService) {}
+  constructor(
+    private readonly _deckService: DeckService,
+    private readonly _cardService: CardService,
+  ) {}
   @Post('create')
   @ApiOperation({ summary: 'Create a deck', operationId: 'createDeck' })
   @ApiResponse(createDeckResponse.success)
@@ -29,7 +41,10 @@ export class DeckController {
     @Body() createDeckDto: CreateDeckDto,
   ): Promise<IResponse<IReadDeck>> {
     try {
-      const data = await this._deckService.create(createDeckDto);
+      const owner = new Types.ObjectId(createDeckDto.owner);
+      const updatedReq = { ...createDeckDto, owner };
+
+      const data = await this._deckService.create(updatedReq);
       return {
         code: 200,
         success: true,
@@ -46,8 +61,7 @@ export class DeckController {
     }
   }
 
-  // add in readMany, readByField
-
+  // add in readMany
   @Post('readByField')
   @ApiOperation({
     summary: 'Read deck by field',
@@ -80,13 +94,11 @@ export class DeckController {
       }
 
       const query = { [field]: value };
-
       const { data, totalCount } = await this._deckService.findByField(query, {
         take,
         skip,
         populate: 'cards',
       });
-      console.log('controlelr', totalCount);
       return {
         code: 200,
         success: true,
@@ -126,5 +138,11 @@ export class DeckController {
         data: null,
       };
     }
+  }
+
+  @Delete('/:id')
+  @ApiOperation({ summary: 'Delete deck by Id', operationId: 'deleteDeckById' })
+  async deleteDeckById(@Param('id') id: string): Promise<any> {
+    return this._deckService.deleteById(id);
   }
 }

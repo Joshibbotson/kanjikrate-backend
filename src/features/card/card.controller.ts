@@ -17,12 +17,16 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Types } from 'mongoose';
+import { DeckService } from '../deck/deck.service';
 
 @ApiTags('Card')
 @ApiExtraModels(Card)
 @Controller('card')
 export class CardController {
-  constructor(private readonly _cardService: CardService) {}
+  constructor(
+    private readonly _cardService: CardService,
+    private readonly _deckService: DeckService,
+  ) {}
   @Post('create')
   @ApiOperation({ summary: 'Create a new card', operationId: 'createCard' })
   @ApiResponse(createCardResponse.success)
@@ -31,7 +35,12 @@ export class CardController {
     @Body() createCardDto: CreateCardDto,
   ): Promise<IResponse<IReadCard>> {
     try {
-      const data = await this._cardService.create(createCardDto);
+      const deck = new Types.ObjectId(createCardDto.deck);
+      const updatedReq = { ...createCardDto, deck };
+      const data = await this._cardService.create(updatedReq);
+      const readDeck = await this._deckService.findById(data.deck);
+      readDeck.cards.push(new Types.ObjectId(data._id));
+      await this._deckService.update(new Types.ObjectId(data.deck), readDeck);
       return {
         code: 200,
         success: true,
@@ -163,7 +172,7 @@ export class CardController {
     @Param('deckId') deckId: string,
   ): Promise<IResponse<IReadCard[]>> {
     try {
-      console.log('hit');
+      console.log('hit', deckId);
       const { data, totalCount } = await this._cardService.getCardsForReview(
         new Types.ObjectId(deckId),
       );
